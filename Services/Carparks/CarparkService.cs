@@ -14,7 +14,7 @@ public class CarparkService(IUnitOfWorkFactory unitOfWorkFactory) : ICarparkServ
         return dc.Carparks.GetAllAsync();
     }
 
-    public Task<Carpark?> GetCarparkById(int id)
+    public Task<Carpark?> GetCarparkByIdAsync(int id)
     {
         using IUnitOfWork dc = _unitOfWorkFactory.Create();
 

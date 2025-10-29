@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MinimalApiSandbox.Data.Models;
+using MinimalApiSandbox.Services;
 
 namespace MinimalApiSandbox.Endpoints;
 
@@ -6,22 +8,25 @@ public static class CarparkEndpoints
 {
     public static IEndpointRouteBuilder AddCarparkEnpoints(this IEndpointRouteBuilder builder)
     {
-        builder.MapGet("/carparks", GetCarparks);
-        builder.MapGet("/carparks/{id}", GetCarparkById);
+        builder.MapGet("/carparks", GetCarparksAsync);
+        builder.MapGet("/carparks/{id}", GetCarparkByIdAsync);
 
         return builder;
     }
 
-    private static IResult GetCarparks()
+    private static async Task<IResult> GetCarparksAsync([FromServices] ICarparkService service)
     {
-        List<object> carparks = null;
+        IEnumerable<Carpark> carparks = await service.GetCarparksAsync();
         
         return Results.Ok(carparks);
     }
 
-    private static IResult GetCarparkById([FromRoute] int id, [FromServices])
+    private static async Task<IResult> GetCarparkByIdAsync([FromRoute] int id, [FromServices] ICarparkService service)
     {
+        Carpark? carpark = await service.GetCarparkByIdAsync(id);
 
-        return Results.Ok();
+        return carpark is null
+            ? Results.NotFound()
+            : Results.Ok(carpark);
     }
 }

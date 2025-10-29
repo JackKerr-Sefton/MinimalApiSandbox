@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MinimalApiSandbox.Data.Models;
+using MinimalApiSandbox.Services;
 
 namespace MinimalApiSandbox.Endpoints;
 
@@ -6,22 +8,25 @@ public static class SchoolEndpoints
 {
     public static IEndpointRouteBuilder AddSchoolEnpoints(this IEndpointRouteBuilder builder)
     {
-        builder.MapGet("/schools", GetSchools);
-        builder.MapGet("/schools/{id}", GetSchoolById);
+        builder.MapGet("/schools", GetSchoolsAsync);
+        builder.MapGet("/schools/{id}", GetSchoolByIdAsync);
 
         return builder;
     }
 
-    private static IResult GetSchools()
+    private static async Task<IResult> GetSchoolsAsync([FromServices] ISchoolService service)
     {
-        List<object> schools = null;
+        IEnumerable<School> carparks = await service.GetSchoolsAsync();
 
-        return Results.Ok(schools);
+        return Results.Ok(carparks);
     }
 
-    private static IResult GetSchoolById([FromRoute] int id)
+    private static async Task<IResult> GetSchoolByIdAsync([FromRoute] int id, [FromServices] ISchoolService service)
     {
+        School? carpark = await service.GetSchoolByIdAsync(id);
 
-        return Results.Ok();
+        return carpark is null
+            ? Results.NotFound()
+            : Results.Ok(carpark);
     }
 }

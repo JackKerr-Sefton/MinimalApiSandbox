@@ -4,6 +4,6 @@ namespace MinimalApiSandbox.Services;
 
 public interface ICarparkService
 {
-    Task<Carpark?> GetCarparkById(int id);
+    Task<Carpark?> GetCarparkByIdAsync(int id);
     Task<IEnumerable<Carpark>> GetCarparksAsync();
 }

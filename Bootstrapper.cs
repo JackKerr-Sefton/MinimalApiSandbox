@@ -9,7 +9,7 @@ public static class Bootstrapper
     public static void AddServices(this IServiceCollection services)
         => services
             // App Services
-            .AddScoped<ICarparkService, CarparkService>()
+            .AddScoped<ICarparkService, CarparkService>() // Learning: Interfaces
             .AddScoped<ISchoolService, SchoolService>()
 
             // Data Services
