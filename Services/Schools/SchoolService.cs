@@ -10,6 +10,6 @@ public class SchoolService(IUnitOfWork unitOfWork) : ISchoolService // We don't 
     public Task<IEnumerable<School>> GetSchoolsAsync()
         => _dc.Schools.GetAllAsync();
 
-    public Task<School?> GetSchoolById(int id)
+    public Task<School?> GetSchoolByIdAsync(int id)
         => _dc.Schools.GetByIdAsync(id);
 }

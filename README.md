@@ -212,3 +212,30 @@ Further reading:
 - [Garbage Collection](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals)
 - [Cleaning up unmanaged resources](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/unmanaged)
 - [The using statement](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/using)
+
+### Interfaces
+
+Interfaces can often seem a little pointless in their common uses. Take this block from the Bootstrapper:
+
+```
+    public static void AddServices(this IServiceCollection services)
+        => services
+            // App Services
+            .AddScoped<ICarparkService, CarparkService>()
+            .AddScoped<ISchoolService, SchoolService>()
+
+            // Data Services
+            .AddSingleton<IUnitOfWorkFactory, UnitOfWorkFactory>()
+            .AddScoped<IUnitOfWork, UnitOfWork>()
+            ;
+```
+
+That's 4 instances of interfaces implemented exclusively by a single class. So if we only ever have one `ICarparkService` implementation then why even bother with the interface?
+
+1. [SOLID design](https://www.freecodecamp.org/news/solid-design-principles-in-software-development/) specifically D, "The dependency inversion principle (DIP) states to depend upon abstractions, not concretes."
+
+    Phrased differently high-level modules should not depend on low-level modules. In this case our endpoints are the high level while our services are the low level.
+
+1. Unit Testing
+
+    Take the `CarparkService`. To Unit Test it we would have to construct it with an instance of the `UnitOfWorkFactory` but then we're not Unit Testing `CarParkService`, we're integration testing a collection of classes. Instead we can construct `CarParkService` with a dummy `IUnitOfWorkFactory` (known as a stub) that will produce a set of controlled results on its methods thereby isolating our testing exclusively to how `CarParkService` handles those results.
